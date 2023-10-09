@@ -3,6 +3,7 @@
 #include "include/catch.h"
 #include "include/skiplist.h"
 #include "include/key_value.h"
+#include "include/comparator.h"
 
 
 SKIPLIST_START
@@ -122,29 +123,45 @@ SKIPLIST_START
 
 typedef KeyValue<int, double> Key;
 
-struct Comparator {
-  int operator()(const KeyValue<int, double>& a, const KeyValue<int, double>& b) const {
-    if (a.key_ < b.key_) {
-      return -1;
-    } else if (a.key_ > b.key_) {
-      return + 1;
-    } else {
-      return 0;
-    }
-  }
-};
+// struct Comparator {
+//   int operator()(const Key& a, const Key& b) const {
+//     if (a.key_ < b.key_) {
+//       return -1;
+//     } else if (a.key_ > b.key_) {
+//       return + 1;
+//     } else {
+//       return 0;
+//     }
+//   }
+// };
 
 TEST_CASE("Test KeyValue", "[SkipList KeyValue]") {
   Arena arena;
-  Comparator cmp;
-  SkipList<Key, Comparator> list(cmp, &arena);
-  REQUIRE(!list.Contains(KeyValue<int, double>(10, 10)) == true);
+  KeyComparator<Key> cmp;
+  SkipList<Key, KeyComparator<Key>> list(cmp, &arena);
+  REQUIRE(!list.Contains(Key(10, 10)) == true);
 
-  SkipList<Key, Comparator>::Iterator iter(&list);
+  SkipList<Key, KeyComparator<Key>>::Iterator iter(&list);
   REQUIRE_FALSE(iter.Valid());
   iter.SeekToFirst();
   REQUIRE_FALSE(iter.Valid());
-  iter.Seek(KeyValue<int, double>(100, 100));
+  iter.Seek(Key(100, 100));
+  REQUIRE_FALSE(iter.Valid());
+  iter.SeekToLast();
+  REQUIRE_FALSE(iter.Valid());
+}
+
+TEST_CASE("Simple Test Case", "[SkipList]") {
+  Arena arena;
+  KeyComparator<Key> cmp;
+  SkipList<Key, KeyComparator<Key>> list(cmp, &arena);
+  REQUIRE(!list.Contains(Key(10, 10)) == true);
+
+  SkipList<Key, KeyComparator<Key>>::Iterator iter(&list);
+  REQUIRE_FALSE(iter.Valid());
+  iter.SeekToFirst();
+  REQUIRE_FALSE(iter.Valid());
+  iter.Seek(Key(100, 100));
   REQUIRE_FALSE(iter.Valid());
   iter.SeekToLast();
   REQUIRE_FALSE(iter.Valid());
