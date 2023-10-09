@@ -14,8 +14,10 @@ mkdir build && cd build && cmake .. && make
 - [x] 跳表实现
 - [x] catch2单元测试
 - [x] 支持自定义类型和比较器
-- [x] 支持并发，使用无锁编程
 - [x] 自定义比较器只支持原生类型，若要支持其他类型可参考src/include/comparator.h 定制比较器
+
+## TODO
+- [] 并发及测试
 
 ## Acknowledgements
 A large number of implements references [leveldb](https://github.com/google/leveldb)

@@ -14,6 +14,12 @@ class KeyValue {
 
   KeyValue() : key_(0), value_(0) {}
   KeyValue(const KeyType &key, const ValueType &value) : key_(key), value_(value) {}
+  KeyValue(const KeyType &key) {
+    value_ = key_ = key;
+  }
+  KeyValue(const ValueType &value) {
+    value_ = key_ = value;
+  }
 
   ~KeyValue() = default;
 
@@ -43,13 +49,39 @@ class KeyValue {
     return *this;
   }
 
+  auto operator==(const KeyValue &other) const noexcept -> bool {
+    return this->key_ == other.key_;
+  }
+
+  auto operator<(const KeyValue &other) const noexcept -> bool {
+    return this->key_ < other.key_;
+  }
+
+  auto operator>(const KeyValue &other) const noexcept -> bool {
+    return this->key_ > other.key_;
+  }
+
  public:
+  auto GetKey() const noexcept -> KeyType {
+    return key_;
+  }
+
+  auto GetValue() const noexcept -> ValueType {
+    return value_;
+  }
+
+  auto SetKey(KeyType key) noexcept -> void {
+    key_ = key;
+  }
+
+  auto SetValue(ValueType value) noexcept -> void {
+    value_ = value;
+  }
+  
+ private:
   KeyType key_;
   ValueType value_;
 };
-
-
-
 
 SKIPLIST_END
 
