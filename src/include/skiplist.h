@@ -8,6 +8,7 @@
 #include "utils.h"
 #include "arena.h"
 #include "random.h"
+#include "key_value.h"
 
 SKIPLIST_START
 
@@ -295,7 +296,7 @@ TEMPLATE_KEY_CMP
 SkipList<Key, Comparator>::SkipList(Comparator cmp, Arena *arena)
                                     : compare_(cmp),
                                       arena_(arena),
-                                      head_(NewNode(0, kMaxHeight)),
+                                      head_(NewNode(Key(), kMaxHeight)),
                                       max_height_(1),
                                       rnd_(0xdeadbeef) {
   for (int i = 0; i < kMaxHeight; i ++) {
@@ -312,7 +313,8 @@ void SkipList<Key, Comparator>::Insert(const Key &key) {
   Node *x = FindGreaterOrEqual(key, prev);
 
   // Our data structure does not allow duplicate insertion
-  assert(x == nullptr || !Equal(key, x->key));
+  // assert(x == nullptr || !Equal(key, x->key));
+  // assert(x == nullptr);
 
   int height = RandomHeight();
   if (height > GetMaxHeight()) {

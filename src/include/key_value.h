@@ -3,7 +3,9 @@
 
 #include <string>
 #include <list>
+#include <type_traits>
 
+#include "arena.h"
 #include "utils.h"
 
 SKIPLIST_START
@@ -12,13 +14,79 @@ template<typename KeyType, typename ValueType>
 class KeyValue {
  public:
 
-  KeyValue() : key_(0), value_(0) {}
+  KeyValue() {
+    // if (std::is_same<KeyType, int>::value) {
+    //   key_ = * new KeyType();
+    // } else if (std::is_same<KeyType, double>::value) {
+    //   key_  = * new KeyType();
+    // } else if (std::is_same<KeyType, bool>::value) {
+    //   key_  = * new KeyType();
+    // } else if (std::is_same<KeyType, std::string>::value || 
+    //           std::is_same<KeyType, char *>::value || std::is_same<ValueType, const char *>::value) {
+    //     key_  = * new KeyType();
+    // }
+
+    // if (std::is_same<ValueType, int>::value) {
+    //   value_ = * new ValueType();
+    // } else if (std::is_same<ValueType, double>::value) {
+    //   value_ = * new ValueType();
+    // } else if (std::is_same<ValueType, bool>::value) {
+    //   value_ = * new ValueType();
+    // } else if (std::is_same<ValueType, std::string>::value || 
+    //           std::is_same<ValueType, char *>::value || std::is_same<ValueType, const char *>::value) {
+    //     value_ = * new ValueType();
+    // }
+
+    // key_ = * (new KeyType());
+    // value_ = * (new ValueType());
+
+    char * const key_memory = (char *) malloc(sizeof(KeyType));
+    char * const value_memory = (char *) malloc(sizeof(ValueType));
+    new (key_memory) KeyType();
+    new (value_memory) ValueType();
+  }
   KeyValue(const KeyType &key, const ValueType &value) : key_(key), value_(value) {}
   KeyValue(const KeyType &key) {
-    value_ = key_ = key;
+    // key_ = key;
+
+    // if (std::is_same<ValueType, int>::value) {
+    //   value_ = (int) key;
+    // } else if (std::is_same<ValueType, double>::value) {
+    //   value_ = (double) (key);
+    // } else if (std::is_same<ValueType, bool>::value) {
+    //   value_ = !!(key);
+    // } else if (std::is_same<ValueType, std::string>::value || 
+    //           std::is_same<ValueType, char *>::value || std::is_same<ValueType, const char *>::value) {
+    //     value_ = std::to_string(key);
+    // }
+
+    // value_ = * (new ValueType());
+
+    char * const key_memory = (char *) malloc(sizeof(KeyType));
+    char * const value_memory = (char *) malloc(sizeof(ValueType));
+    new (key_memory) KeyType(key);
+    new (value_memory) ValueType();
   }
   KeyValue(const ValueType &value) {
-    value_ = key_ = value;
+    // value_ = value;
+
+    // if (std::is_same<KeyType, int>::value) {
+    //   key_  = (int) value;
+    // } else if (std::is_same<KeyType, double>::value) {
+    //   key_  = (double) (value);
+    // } else if (std::is_same<KeyType, bool>::value) {
+    //   key_  = !!(value);
+    // } else if (std::is_same<KeyType, std::string>::value || 
+    //           std::is_same<KeyType, char *>::value || std::is_same<KeyType, const char *>::value) {
+    //     key_  = std::to_string(value);
+    // }
+
+    // key_ = * (new KeyType());
+
+    char * const key_memory = (char *) malloc(sizeof(KeyType));
+    char * const value_memory = (char *) malloc(sizeof(ValueType));
+    new (key_memory) KeyType();
+    new (value_memory) ValueType(value);
   }
 
   ~KeyValue() = default;

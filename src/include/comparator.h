@@ -7,9 +7,9 @@ template <typename Key>
 class KeyComparator {
  public:
   auto operator()(const Key& a, const Key& b) const -> int {
-    if (a.key_ < b.key_) {
-      return -1;
-    } else if (a.key_ > b.key_) {
+    if (a.GetKey() < b.GetKey()) {
+      return - 1;
+    } else if (a.GetKey() > b.GetKey()) {
       return + 1;
     } else {
       return 0;
