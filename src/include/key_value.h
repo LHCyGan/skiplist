@@ -42,8 +42,8 @@ class KeyValue {
 
     char * key_memory = new char[sizeof(KeyType)];
     char * value_memory = new char[sizeof(ValueType)];
-    new (key_memory) KeyType();
-    new (value_memory) ValueType();
+    &key_ =  new (key_memory) KeyType();
+    &value_ = new (value_memory) ValueType();
   }
   KeyValue(const KeyType &key, const ValueType &value) : key_(key), value_(value) {}
   KeyValue(const KeyType &key) {
@@ -64,8 +64,8 @@ class KeyValue {
 
     char * key_memory = new char[sizeof(KeyType)];
     char * value_memory = new char[sizeof(ValueType)];
-    new (key_memory) KeyType(key);
-    new (value_memory) ValueType();
+    &key_ =  new (key_memory) KeyType(key);
+    &value_ = new (value_memory) ValueType();
   }
   KeyValue(const ValueType &value) {
     // value_ = value;
@@ -86,7 +86,7 @@ class KeyValue {
     char * key_memory = new char[sizeof(KeyType)];
     char * value_memory = new char[sizeof(ValueType)];
     &key_ =  new (key_memory) KeyType();
-    &value_ = new (value_memory) ValueType();
+    &value_ = new (value_memory) ValueType(value);
   }
 
   ~KeyValue() {
