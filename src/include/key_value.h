@@ -40,8 +40,8 @@ class KeyValue {
     // key_ = * (new KeyType());
     // value_ = * (new ValueType());
 
-    char * const key_memory = (char *) malloc(sizeof(KeyType));
-    char * const value_memory = (char *) malloc(sizeof(ValueType));
+    char * key_memory = new char[sizeof(KeyType)];
+    char * value_memory = new char[sizeof(ValueType)];
     new (key_memory) KeyType();
     new (value_memory) ValueType();
   }
@@ -62,8 +62,8 @@ class KeyValue {
 
     // value_ = * (new ValueType());
 
-    char * const key_memory = (char *) malloc(sizeof(KeyType));
-    char * const value_memory = (char *) malloc(sizeof(ValueType));
+    char * key_memory = new char[sizeof(KeyType)];
+    char * value_memory = new char[sizeof(ValueType)];
     new (key_memory) KeyType(key);
     new (value_memory) ValueType();
   }
@@ -83,13 +83,16 @@ class KeyValue {
 
     // key_ = * (new KeyType());
 
-    char * const key_memory = (char *) malloc(sizeof(KeyType));
-    char * const value_memory = (char *) malloc(sizeof(ValueType));
-    new (key_memory) KeyType();
-    new (value_memory) ValueType(value);
+    char * key_memory = new char[sizeof(KeyType)];
+    char * value_memory = new char[sizeof(ValueType)];
+    &key_ =  new (key_memory) KeyType();
+    &value_ = new (value_memory) ValueType();
   }
 
-  ~KeyValue() = default;
+  ~KeyValue() {
+    key_.~KeyType();
+    value_.~ValueType();
+  }
 
   KeyValue(const KeyValue &other) {
     key_ = other.key_;
