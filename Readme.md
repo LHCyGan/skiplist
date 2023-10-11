@@ -43,4 +43,4 @@ mkdir build && cd build && cmake .. && make
 - [x] 并发及测试
 
 ## Acknowledgements
-A large number of implements references [leveldb](https://github.com/google/leveldb)
+My implements references [leveldb](https://github.com/google/leveldb) and [Skiplist-CPP](https://github.com/youngyangyang04/Skiplist-CPP)

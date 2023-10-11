@@ -4,6 +4,8 @@
 #include <atomic>
 #include <cassert>
 #include <cstdlib>
+#include <iostream>
+#include <fstream>
 
 #include "utils.h"
 #include "arena.h"
@@ -33,6 +35,12 @@ class SkipList {
 
   // Returns true iff an entry that compares equal to key is in the list.
   auto Contains(const Key &key) const noexcept -> bool;
+
+  // Display
+  void Display() noexcept;
+
+  // Dump File
+  void DumpFile(const std::string filename) noexcept;
 
   // Iteration over the contents of a skip list
   class Iterator {
@@ -80,6 +88,7 @@ class SkipList {
   auto NewNode(const Key &key, int height) -> Node *;
   auto RandomHeight() -> int;
   auto Equal(const Key &a, const Key &b) const -> bool {
+    // return a.GetKey() == b.GetKey();
     return (compare_(a, b) == 0);
   }
 
@@ -113,6 +122,10 @@ class SkipList {
   
   // Read/written only by Insert().
   Random rnd_;
+
+  // file operator
+  std::ofstream file_writer_;
+  std::ifstream file_reader_;
 };
 
 // Implementation details follow
@@ -233,7 +246,8 @@ auto SkipList<Key, Comparator>::KeyIsAfterNode(const Key &key, Node *n) const ->
 }
 
 TEMPLATE_KEY_CMP
-auto SkipList<Key, Comparator>::FindGreaterOrEqual(const Key &key, Node **prev) const -> Node * {
+auto SkipList<Key, Comparator>::FindGreaterOrEqual(const Key &key, Node **prev) const -> 
+                                                  SkipList<Key, Comparator>::Node * {
   Node *x = head_;
   int level = GetMaxHeight() - 1;
   while (true) {
@@ -254,7 +268,7 @@ auto SkipList<Key, Comparator>::FindGreaterOrEqual(const Key &key, Node **prev) 
 }
 
 TEMPLATE_KEY_CMP
-auto SkipList<Key, Comparator>::FindLessThan(const Key &key) const -> Node * {
+auto SkipList<Key, Comparator>::FindLessThan(const Key &key) const -> SkipList<Key, Comparator>::Node * {
   Node *x = head_;
   int level = GetMaxHeight() - 1;
   while (true) {
@@ -274,7 +288,7 @@ auto SkipList<Key, Comparator>::FindLessThan(const Key &key) const -> Node * {
 }
 
 TEMPLATE_KEY_CMP
-auto SkipList<Key, Comparator>::FindLast() const -> Node * {
+auto SkipList<Key, Comparator>::FindLast() const -> SkipList<Key, Comparator>::Node * {
   Node *x = head_;
   int level = GetMaxHeight() - 1;
   while (true) {
@@ -313,8 +327,7 @@ void SkipList<Key, Comparator>::Insert(const Key &key) {
   Node *x = FindGreaterOrEqual(key, prev);
 
   // Our data structure does not allow duplicate insertion
-  // assert(x == nullptr || !Equal(key, x->key));
-  // assert(x == nullptr);
+  assert(x == nullptr || !Equal(key, x->key));
 
   int height = RandomHeight();
   if (height > GetMaxHeight()) {
@@ -348,6 +361,38 @@ auto SkipList<Key, Comparator>::Contains(const Key &key) const noexcept -> bool 
   } else {
     return false;
   }
+}
+
+TEMPLATE_KEY_CMP
+void SkipList<Key, Comparator>::Display() noexcept {
+  std::cout << "SkipList Display:" << std::endl;
+  Node *x = head_;
+  for (int i = 0; i < max_height_; i ++) {
+    std::cout << "Level " << i << ": ";
+    Node* next = x->Next(i);
+    while (next != nullptr) {
+      std::cout << next->key.GetKey() << ": " << next->key.GetValue() << ";" << '\t';
+      next = next->Next(i);
+    }
+    std::cout << std::endl;
+  }
+}
+
+TEMPLATE_KEY_CMP
+void SkipList<Key, Comparator>::DumpFile(const std::string filename) noexcept {
+  std::cout << "dump_file-----------------" << std::endl;
+  file_writer_.open(filename);
+  Node *x = head_->Next(0);
+
+  while (x != nullptr) {
+    file_writer_ << x->key.GetKey() << ": " << x->key.GetValue() << "\n";
+    x = x->Next(0);
+  }
+
+  file_writer_.flush();
+  file_writer_.close();
+
+  std::cout << "dump finished" << std::endl;
 }
 
 SKIPLIST_END

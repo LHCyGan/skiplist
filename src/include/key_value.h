@@ -4,6 +4,7 @@
 #include <string>
 #include <list>
 #include <type_traits>
+#include <optional>
 
 #include "arena.h"
 #include "utils.h"
@@ -42,10 +43,14 @@ class KeyValue {
 
     char * key_memory = new char[sizeof(KeyType)];
     char * value_memory = new char[sizeof(ValueType)];
-    &key_ =  new (key_memory) KeyType();
-    &value_ = new (value_memory) ValueType();
+    key_ = *  new (key_memory) KeyType();
+    value_ = * new (value_memory) ValueType();
+
+    has_value_ = &key_;
   }
-  KeyValue(const KeyType &key, const ValueType &value) : key_(key), value_(value) {}
+  KeyValue(const KeyType &key, const ValueType &value) : key_(key), value_(value) {
+    has_value_ = &key_;
+  }
   KeyValue(const KeyType &key) {
     // key_ = key;
 
@@ -66,6 +71,8 @@ class KeyValue {
     char * value_memory = new char[sizeof(ValueType)];
     &key_ =  new (key_memory) KeyType(key);
     &value_ = new (value_memory) ValueType();
+
+    has_value_ = &key_;
   }
   KeyValue(const ValueType &value) {
     // value_ = value;
@@ -87,20 +94,27 @@ class KeyValue {
     char * value_memory = new char[sizeof(ValueType)];
     &key_ =  new (key_memory) KeyType();
     &value_ = new (value_memory) ValueType(value);
+
+    has_value_ = &key_;
   }
 
   ~KeyValue() {
     key_.~KeyType();
     value_.~ValueType();
+    has_value_ = nullptr;
   }
 
   KeyValue(const KeyValue &other) {
     key_ = other.key_;
     value_ = other.value_;
+
+    has_value_ = &key_;
   }
   KeyValue(const KeyValue &&other) {
     key_ = std::move(other.key_);
     value_ = std::move(other.value_);
+
+    has_value_ = &key_;
   }
 
   auto operator=(const KeyValue &other) const noexcept -> KeyValue & {
@@ -109,6 +123,8 @@ class KeyValue {
       value_ = other.value_;
     }
 
+    has_value_ = &key_;
+
     return *this;
   }
   auto operator=(const KeyValue &&other) const noexcept -> KeyValue & {
@@ -116,6 +132,8 @@ class KeyValue {
       key_ = std::move(other.key_);
       value_ = std::move(other.value_);
     }
+
+    has_value_ = &key_;
 
     return *this;
   }
@@ -152,6 +170,7 @@ class KeyValue {
  private:
   KeyType key_;
   ValueType value_;
+  KeyType *has_value_{nullptr};
 };
 
 SKIPLIST_END

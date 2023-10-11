@@ -124,32 +124,21 @@ SKIPLIST_START
 
 // typedef KeyValue<int, std::string> Key;
 
-// struct Comparator {
-//   int operator()(const Key& a, const Key& b) const {
-//     if (a.key_ < b.key_) {
-//       return -1;
-//     } else if (a.key_ > b.key_) {
-//       return + 1;
-//     } else {
-//       return 0;
-//     }
-//   }
-// };
-
 // TEST_CASE("Test KeyValue", "[SkipList KeyValue]") {
 //   Arena arena;
 //   KeyComparator<Key> cmp;
 //   SkipList<Key, KeyComparator<Key>> list(cmp, &arena);
-//   REQUIRE(!list.Contains(Key(10, "9999")) == true);
+//   list.Insert(Key(10, "9999"));
+//   REQUIRE(list.Contains(Key(10, "9999")) == true);
 
 //   SkipList<Key, KeyComparator<Key>>::Iterator iter(&list);
 //   REQUIRE_FALSE(iter.Valid());
 //   iter.SeekToFirst();
-//   REQUIRE_FALSE(iter.Valid());
+//   REQUIRE_FALSE(!iter.Valid());
 //   iter.Seek(Key(100, "9999"));
 //   REQUIRE_FALSE(iter.Valid());
 //   iter.SeekToLast();
-//   REQUIRE_FALSE(iter.Valid());
+//   REQUIRE_FALSE(!iter.Valid());
 // }
 
 // TEST_CASE("Simple Test Case", "[SkipList]") {
